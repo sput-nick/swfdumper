@@ -53,9 +53,9 @@ int main(int argc, char *argv[])
 			fclose(fp);
 			}
 			endOfBuf = begOfBuf + fileLen;
-			//printf("first byte 0x%x\n", *begOfBuf);
-			//printf("second byte 0x%x\n", *(begOfBuf+1));
-			//printf("third byte 0x%x\n", *(begOfBuf+2));
+			printf("first byte 0x%x\n", *begOfBuf);
+			printf("second byte 0x%x\n", *(begOfBuf+1));
+			printf("third byte 0x%x\n", *(begOfBuf+2));
 		}
 	}	
 
@@ -90,10 +90,14 @@ int main(int argc, char *argv[])
 
 	// Get the length reported by the file
 	// 4-bytes following the version
-	fileLenVar |= *(begOfBuf+4) << 0;
+	printf("fileLenVar1 0x%x\n", *(begOfBuf+4));
+	fileLenVar |= *(begOfBuf+4);
+	printf("fileLenVar1 0x%x\n", *(begOfBuf+5));
 	fileLenVar |= *(begOfBuf+5) << 8;
+	printf("fileLenVar1 0x%x\n", *(begOfBuf+6));
 	fileLenVar |= *(begOfBuf+6) << 16;
-	fileLenVar |= *(begOfBuf+7) << 32;
+	printf("fileLenVar1 0x%x\n", *(begOfBuf+7));
+	fileLenVar |= *(begOfBuf+7) << 24;
 	printf("fileLenVar: %d\n", fileLenVar);
 
 	// If the file is compressed then it will need
