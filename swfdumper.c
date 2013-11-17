@@ -1,16 +1,20 @@
 
 // swfdumper
-// dump information from a file
+// dump information from a SWF file
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 
 int main(int argc, char *argv[])
 {
 	FILE *fp;
-	char *begOfBuf;
-	char *endOfBuf;
-	unsigned long fileLen;
+	uint8_t *begOfBuf;
+	//uint8_t *tmp_cursor;
+	uint8_t *endOfBuf;
+	unsigned int fileLen;
+	uint32_t fileLenVar = 0;
+	uint8_t isCompressed = 0; 
 
 	// no file provided
 	if (argc !=2) {
@@ -23,10 +27,11 @@ int main(int argc, char *argv[])
 			exit(1);
 		}
 		else {
+			printf("\n%s\n", argv[1]);
 			// get the file length
 			fseek(fp, 0, SEEK_END);
 			fileLen = ftell(fp);
-			printf("File size on disk: %lu\n", fileLen);
+			printf("File size on disk: %d\n", fileLen);
 			fseek(fp, 0, SEEK_SET);
 			
 			// 8 bytes are required for the header
@@ -62,7 +67,7 @@ int main(int argc, char *argv[])
 	switch (*begOfBuf) {
 		case 0x46:
 			printf("Not compressed\n"); 
-			// length is 4-bytes following FWS
+			// length is 4-bytes following version
 			break;
 		case 0x43:
 			printf("zlib compressed\n");
@@ -77,4 +82,12 @@ int main(int argc, char *argv[])
 
 	// Identify the version
 	printf("Version: %d\n", *(begOfBuf+3));
+
+	// Get the length reported by the file
+	// 4-bytes following the version
+	fileLenVar |= *(begOfBuf+4) << 0;
+	fileLenVar |= *(begOfBuf+5) << 8;
+	fileLenVar |= *(begOfBuf+6) << 16;
+	fileLenVar |= *(begOfBuf+7) << 32;
+	printf("fileLenVar: %d\n", fileLenVar);
 }
