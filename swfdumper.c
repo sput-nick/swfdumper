@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+//#include <zlib.h>
 
 int main(int argc, char *argv[])
 {
@@ -41,7 +42,7 @@ int main(int argc, char *argv[])
 			}
 
 			// allocate buffer
-			begOfBuf = malloc(fileLen + 1);
+			begOfBuf = calloc(1,(fileLen + 1));
 			if (begOfBuf == NULL) {
 				printf("Allocation failed\n");
 				exit(EXIT_FAILURE);
@@ -49,6 +50,7 @@ int main(int argc, char *argv[])
 			else {
 			// fill the buffer
 			fread(begOfBuf, 1, fileLen, fp);
+			fclose(fp);
 			}
 			endOfBuf = begOfBuf + fileLen;
 			//printf("first byte 0x%x\n", *begOfBuf);
@@ -60,6 +62,7 @@ int main(int argc, char *argv[])
 	// identify the file
 	if ( (*(begOfBuf+1) != 0x57) || (*(begOfBuf+2)) != 0x53 ) {
 		printf("File is not SWF *WS\n");
+		free(begOfBuf);
 		exit(EXIT_FAILURE);
 	}
 
@@ -98,11 +101,13 @@ int main(int argc, char *argv[])
 	if (isCompressed == 1) {
 		printf("Some code here will one day decompress this data.\n");
 		printf("For now, just exit\n");
+		free(begOfBuf);
 		exit(EXIT_FAILURE);
 	}
 	else {
 		printf("Parsing code for data\n");
 	}
 
+	free(begOfBuf);
 	return EXIT_SUCCESS;
 }
