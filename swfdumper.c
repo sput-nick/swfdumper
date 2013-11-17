@@ -90,15 +90,11 @@ int main(int argc, char *argv[])
 
 	// Get the length reported by the file
 	// 4-bytes following the version
-	printf("fileLenVar1 0x%x\n", *(begOfBuf+4));
 	fileLenVar |= *(begOfBuf+4);
-	printf("fileLenVar1 0x%x\n", *(begOfBuf+5));
 	fileLenVar |= *(begOfBuf+5) << 8;
-	printf("fileLenVar1 0x%x\n", *(begOfBuf+6));
 	fileLenVar |= *(begOfBuf+6) << 16;
-	printf("fileLenVar1 0x%x\n", *(begOfBuf+7));
 	fileLenVar |= *(begOfBuf+7) << 24;
-	printf("fileLenVar: %d\n", fileLenVar);
+
 
 	// If the file is compressed then it will need
 	// decompressed before continuing analysis
