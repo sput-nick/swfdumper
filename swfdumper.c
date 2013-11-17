@@ -19,12 +19,12 @@ int main(int argc, char *argv[])
 	// no file provided
 	if (argc !=2) {
 		printf("Just one file...\n");
-		exit(1);
+		exit(EXIT_FAILURE);
 	}
 	else {
 		if (( fp = fopen(argv[1], "r")) == NULL) {
 			printf("Can not open file %s\n", argv[1]);
-			exit(1);
+			exit(EXIT_FAILURE);
 		}
 		else {
 			printf("\n%s\n", argv[1]);
@@ -37,14 +37,14 @@ int main(int argc, char *argv[])
 			// 8 bytes are required for the header
 			if (fileLen < 8) {
 				printf("Incomplete header\n");
-				exit(1);
+				exit(EXIT_FAILURE);
 			}
 
 			// allocate buffer
 			begOfBuf = malloc(fileLen + 1);
 			if (begOfBuf == NULL) {
 				printf("Allocation failed\n");
-				exit(1);
+				exit(EXIT_FAILURE);
 			}
 			else {
 			// fill the buffer
@@ -60,7 +60,7 @@ int main(int argc, char *argv[])
 	// identify the file
 	if ( (*(begOfBuf+1) != 0x57) || (*(begOfBuf+2)) != 0x53 ) {
 		printf("File is not SWF *WS\n");
-		exit(1);
+		exit(EXIT_FAILURE);
 	}
 
 	// Identify the compression type
@@ -71,9 +71,11 @@ int main(int argc, char *argv[])
 			break;
 		case 0x43:
 			printf("zlib compressed\n");
+			isCompressed = 1;
 			break;
 		case 0x5A:
 			printf("LZMA compressed\n");
+			isCompressed = 1;
 			break;
 		default:
 			printf("Not a SWF, invalid compression type\n");
@@ -90,4 +92,17 @@ int main(int argc, char *argv[])
 	fileLenVar |= *(begOfBuf+6) << 16;
 	fileLenVar |= *(begOfBuf+7) << 32;
 	printf("fileLenVar: %d\n", fileLenVar);
+
+	// If the file is compressed then it will need
+	// decompressed before continuing analysis
+	if (isCompressed == 1) {
+		printf("Some code here will one day decompress this data.\n");
+		printf("For now, just exit\n");
+		exit(EXIT_FAILURE);
+	}
+	else {
+		printf("Parsing code for data\n");
+	}
+
+	return EXIT_SUCCESS;
 }
